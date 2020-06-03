@@ -1,8 +1,10 @@
 package com.myn.usercontrol.service.impl;
 
+import com.myn.usercontrol.domain.UserEntity;
+import com.myn.usercontrol.dto.User;
 import com.myn.usercontrol.repository.UserRepository;
 import com.myn.usercontrol.service.UserService;
-import org.apache.catalina.User;
+import com.myn.usercontrol.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +13,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -24,17 +28,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        UserEntity userEntity = userRepository.findById(id).orElse();
     }
 
     @Override
     public Iterable<User> findAll() {
-        return userRepository.findAll();
+//        return userRepository.findAll();
+        return null;
+
     }
 
     @Override
     public User save(User user) {
-        return userRepository.save(user);
+//        return userRepository.save(user);
+        return null;
+
     }
 
     @Override
@@ -44,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(User user) {
-        userRepository.delete(user);
+//        userRepository.delete(user);
+
     }
 }
