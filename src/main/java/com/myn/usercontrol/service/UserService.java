@@ -3,18 +3,16 @@ package com.myn.usercontrol.service;
 
 import com.myn.usercontrol.dto.User;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserService {
     boolean existsById(Long id);
 
-    Optional<User> findById(Long id);
+    User findById(Long id);
 
-    Iterable<User> findAll();
+    List<User> findAll();
 
     User save(User user);
 
     void deleteById(Long id);
-
-    void delete(User user);
 }
