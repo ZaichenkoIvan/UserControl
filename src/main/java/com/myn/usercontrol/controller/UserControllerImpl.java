@@ -29,8 +29,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public User editUser(User user) {
-        return userService.edit(user);
+    public User editUser(Long id,User user) {
+        return userService.edit(id, user);
     }
 
     @Override

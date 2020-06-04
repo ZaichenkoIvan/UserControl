@@ -54,12 +54,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User edit(User user) {
-        if (!existsById(user.getId())) {
+    public User edit(Long id, User user) {
+        if (!existsById(id)) {
             throw new UserNotExistRuntimeException();
         }
 
         UserEntity userEntity = userMapper.userToUserEntity(user);
+        userEntity.setId(id);
+
         userRepository.save(userEntity);
         return userMapper.userEntityToUser(userEntity);
     }

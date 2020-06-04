@@ -1,7 +1,10 @@
 package com.myn.usercontrol.controller;
 
 import com.myn.usercontrol.dto.User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -10,14 +13,14 @@ public interface UserController {
     List<User> showUsers();
 
     @GetMapping("/user/{id}")
-    User showUser(@RequestParam("id") Long id);
+    User showUser(@PathVariable("id") Long id);
 
     @PostMapping("/user")
     User createUser(@RequestBody User user);
 
     @PostMapping("/user/edit/{id}")
-    User editUser(@RequestBody User user);
+    User editUser(@PathVariable("id") Long id, @RequestBody User user);
 
-    @PostMapping("/user/delete")
-    void delete(Long id);
+    @PostMapping("/user/delete/{id}")
+    void delete(@PathVariable("id") Long id);
 }

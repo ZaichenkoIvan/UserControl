@@ -12,7 +12,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    User edit(User user);
+    User edit(Long id, User user);
 
     void deleteById(Long id);
 }
