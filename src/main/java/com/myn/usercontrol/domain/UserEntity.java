@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -26,8 +27,8 @@ public class UserEntity {
     @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "birthDay", columnDefinition = "TIMESTAMP")
-    private LocalDateTime birthDay;
+    @Column(name = "birthDay")
+    private LocalDate birthDay;
 
     @Column(name = "login")
     private String login;

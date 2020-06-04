@@ -55,22 +55,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User edit(Long id, User user) {
-        if (!existsById(id)) {
-            throw new UserNotExistRuntimeException();
-        }
+        checkUserExist(id);
 
-        UserEntity userEntity = userMapper.userToUserEntity(user);
-        userEntity.setId(id);
-
-        userRepository.save(userEntity);
-        return userMapper.userEntityToUser(userEntity);
+        user.setId(id);
+        return save(user);
     }
 
     @Override
     public void deleteById(Long id) {
-        checkCorrectIdUser(id);
+        checkUserExist(id);
 
         userRepository.deleteById(id);
+    }
+
+    private void checkUserExist(Long id) {
+        if (userNotExistsById(id)) {
+            throw new UserNotExistRuntimeException();
+        }
     }
 
     private void checkCorrectIdUser(Long id) {
@@ -79,9 +80,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean existsById(Long id) {
+    private boolean userNotExistsById(Long id) {
         checkCorrectIdUser(id);
 
-        return userRepository.existsById(id);
+        return !userRepository.existsById(id);
     }
 }
