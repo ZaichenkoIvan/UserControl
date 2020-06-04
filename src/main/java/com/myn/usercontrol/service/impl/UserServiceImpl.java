@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,10 +28,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long id) {
-        checkCorrectIdUser(id);
-
-        return userRepository.existsById(id);
+    public User save(User user) {
+        UserEntity userEntity = userMapper.userToUserEntity(user);
+        userEntity = userRepository.save(userEntity);
+        return userMapper.userEntityToUser(userEntity);
     }
 
     @Override
@@ -45,15 +46,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-//        return userRepository.findAll();
-        return null;
-
+        List<UserEntity> userEntities = userRepository.findAll();
+        return userEntities
+                .stream()
+                .map(userMapper::userEntityToUser)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User save(User user) {
+    public User edit(User user) {
+        if (!existsById(user.getId())) {
+            throw new UserNotExistRuntimeException();
+        }
+
         UserEntity userEntity = userMapper.userToUserEntity(user);
-        userEntity = userRepository.save(userEntity);
+        userRepository.save(userEntity);
         return userMapper.userEntityToUser(userEntity);
     }
 
@@ -65,8 +72,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkCorrectIdUser(Long id) {
-        if(id < THE_SMALLEST_POSSIBLE_ID){
+        if (id < THE_SMALLEST_POSSIBLE_ID) {
             throw new UserIdNegativeRuntimeException(ID_MUST_BE_POSITIVE);
         }
+    }
+
+    private boolean existsById(Long id) {
+        checkCorrectIdUser(id);
+
+        return userRepository.existsById(id);
     }
 }

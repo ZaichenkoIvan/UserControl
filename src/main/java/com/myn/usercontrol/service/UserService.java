@@ -6,13 +6,13 @@ import com.myn.usercontrol.dto.User;
 import java.util.List;
 
 public interface UserService {
-    boolean existsById(Long id);
+    User save(User user);
 
     User findById(Long id);
 
     List<User> findAll();
 
-    User save(User user);
+    User edit(User user);
 
     void deleteById(Long id);
 }

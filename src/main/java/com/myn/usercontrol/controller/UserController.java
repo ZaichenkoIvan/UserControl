@@ -1,15 +1,23 @@
 package com.myn.usercontrol.controller;
 
-import com.myn.usercontrol.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import com.myn.usercontrol.dto.User;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
-public class UserController {
-    private final UserService userService;
+import java.util.List;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+public interface UserController {
+    @GetMapping("/user")
+    List<User> showUsers();
+
+    @GetMapping("/user/{id}")
+    User showUser(@RequestParam("id") Long id);
+
+    @PostMapping("/user")
+    User createUser(@RequestBody User user);
+
+    @PostMapping("/user/edit/{id}")
+    User editUser(@RequestBody User user);
+
+    @PostMapping("/user/delete")
+    void delete(Long id);
 }
