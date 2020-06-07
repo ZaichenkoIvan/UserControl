@@ -14,16 +14,16 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,6 +34,7 @@ public class UserServiceImplTest {
     private static final User USER = InitializationDataForTest.getUser();
     private static final List<UserEntity> USER_ENTITIES = Arrays.asList(USER_ENTITY, USER_ENTITY);
     private static final List<User> USERS = Arrays.asList(USER, USER);
+    private static final String encodePassword = "encodePassword";
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -44,12 +45,15 @@ public class UserServiceImplTest {
     @MockBean
     private UserMapper userMapper;
 
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserServiceImpl userService;
 
     @After
     public void resetMock() {
-        reset(userRepository, userMapper);
+        reset(userRepository, userMapper, passwordEncoder);
     }
 
     @Test
@@ -67,7 +71,7 @@ public class UserServiceImplTest {
         when(userMapper.userEntityToUser(any(UserEntity.class))).thenReturn(USER);
         User actual = userService.findById(1L);
 
-        assertThat(actual, equalTo(USER));
+        assertThat(actual, is(USER));
     }
 
     @Test
@@ -86,13 +90,14 @@ public class UserServiceImplTest {
         List<User> actual = userService.findAll();
         verify(userMapper, times(2)).userEntityToUser(any(UserEntity.class));
 
-        assertThat(actual, equalTo(USERS));
+        assertThat(actual, is(USERS));
     }
 
     @Test
     public void editShouldThrowUserNotExistRuntimeExceptionWithNoExistedUser() {
         exception.expect(UserNotExistRuntimeException.class);
         when(userRepository.existsById(anyLong())).thenReturn(false);
+        when(passwordEncoder.encode(anyString())).thenReturn(encodePassword);
 
         userService.edit(1L, USER);
     }
@@ -101,6 +106,7 @@ public class UserServiceImplTest {
     public void editShouldThrowUserIdNegativeRuntimeExceptionWithNegativeId() {
         exception.expect(UserIdNegativeRuntimeException.class);
         exception.expectMessage("Id must be positive");
+        when(passwordEncoder.encode(anyString())).thenReturn(encodePassword);
 
         userService.edit(-1L, USER);
     }
@@ -112,10 +118,10 @@ public class UserServiceImplTest {
         when(userMapper.userToUserEntity(any(User.class))).thenReturn(USER_ENTITY);
         when(userRepository.save(any(UserEntity.class))).thenReturn(USER_ENTITY);
         when(userMapper.userEntityToUser(any(UserEntity.class))).thenReturn(USER);
+        when(passwordEncoder.encode(anyString())).thenReturn(encodePassword);
 
         User actual = userService.edit(1L, USER);
-        assertThat(actual, equalTo(USER));
-
+        assertThat(actual, is(USER));
     }
 
     @Test
@@ -130,6 +136,7 @@ public class UserServiceImplTest {
     public void deleteByIdShouldThrowUserIdNegativeRuntimeExceptionWithNegativeId() {
         exception.expect(UserIdNegativeRuntimeException.class);
         exception.expectMessage("Id must be positive");
+        when(passwordEncoder.encode(anyString())).thenReturn(encodePassword);
 
         userService.edit(-1L, USER);
     }
@@ -146,8 +153,9 @@ public class UserServiceImplTest {
         when(userMapper.userToUserEntity(any(User.class))).thenReturn(USER_ENTITY);
         when(userRepository.save(any(UserEntity.class))).thenReturn(USER_ENTITY);
         when(userMapper.userEntityToUser(any(UserEntity.class))).thenReturn(USER);
+        when(passwordEncoder.encode(anyString())).thenReturn(encodePassword);
 
         User actual = userService.save(USER);
-        assertThat(actual, equalTo(USER));
+        assertThat(actual, is(USER));
     }
 }

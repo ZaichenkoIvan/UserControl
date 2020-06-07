@@ -18,7 +18,7 @@ public class UserMapperTest {
     private final UserMapper userMapper = new UserMapper();
 
     @Test
-    public void shouldMapAddressEntityToAddress() {
+    public void shouldMapUserEntityToUser() {
         User actual = userMapper.userEntityToUser(USER_ENTITY);
         Assertions.assertAll(
                 () -> assertEquals(actual.getId(), USER.getId()),

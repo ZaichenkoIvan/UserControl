@@ -4,37 +4,80 @@ import com.myn.usercontrol.dto.User;
 import com.myn.usercontrol.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-@RestController
+@Controller
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UserControllerImpl implements UserController {
+@RequestMapping("/user")
+public class UserControllerImpl {
+    private static final int PAGE_SIZE = 10;
     private final UserService userService;
 
-    @Override
-    public List<User> showUsers() {
-        return userService.findAll();
+    @GetMapping("")
+    public String showUsers(Model model, @RequestParam(value = "page", required = false) Integer page) {
+        addPagination(model, page);
+        model.addAttribute("user", new User());
+        return "users";
     }
 
-    @Override
-    public User showUser(Long id) {
-        return userService.findById(id);
+    @PostMapping("")
+    public String createUser(Model model, @RequestParam(value = "page", required = false) Integer page,
+                             @ModelAttribute @Valid User user) {
+        userService.save(user);
+        model.addAttribute("addedUser", user.getFirstName());
+
+        addPagination(model, page);
+
+        return "redirect:/user";
     }
 
-    @Override
-    public User createUser(User user) {
-        return userService.save(user);
+    @GetMapping("/edit/{id}")
+    public String updateUser(Model model, @RequestParam(value = "page", required = false) Integer page, @PathVariable Long id) {
+        model.addAttribute("editId", id);
+        User editUser = userService.findById(id);
+        model.addAttribute("user", editUser);
+        addPagination(model, page);
+
+        return "users";
     }
 
-    @Override
-    public User editUser(Long id,User user) {
-        return userService.edit(id, user);
+    @PostMapping("/edit/{id}")
+    public ModelAndView editUser(Model model, @RequestParam(value = "page", required = false) Integer page, @PathVariable Long id,
+                                 @ModelAttribute User user) {
+        userService.edit(id, user);
+        addPagination(model, page);
+
+        return new ModelAndView("redirect:/user");
     }
 
-    @Override
-    public void delete(Long id) {
+    @GetMapping("/delete/{id}")
+    public ModelAndView delete(Model model, @RequestParam(value = "page", required = false) Integer page, @PathVariable Long id) {
         userService.deleteById(id);
+        addPagination(model, page);
+
+        return new ModelAndView("redirect:/user");
+    }
+
+    private void addPagination(Model model, Integer current) {
+        int currentPage = current == null ? 1 : current;
+        Page<User> users = userService.getPageUsers(currentPage, PAGE_SIZE);
+        model.addAttribute("users", users);
+        model.addAttribute("currentPage", currentPage);
+        int totalPages = users.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
     }
 }

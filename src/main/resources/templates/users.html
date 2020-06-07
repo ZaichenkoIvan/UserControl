@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <title>Users</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"/>
+</head>
+<body>
+<div class="title-container"><p class="h3">List Users:</p></div>
+<div>
+    <div th:if="${addedUser != null}">
+        <p class="h4"> User added successfully
+    </div>
+
+    <div class="user-create-form" th:if="${editId == null}">
+        <FORM method="POST" th:action="@{/user}" th:object="${user}">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">First name</label>
+                <div class="col-sm-10">
+                    <input name="firstName" type="text" size="45" th:field="${user.firstName}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Last name</label>
+                <div class="col-sm-10">
+                    <input name="lastName" type="text" size="45" th:field="${user.lastName}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Birthday</label>
+                <div class="col-sm-10">
+                    <input name="birthDay" type="text" size="45" placeholder="yy.mm.dd" th:field="${user.birthDay}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Login</label>
+                <div class="col-sm-10">
+                    <input name="firstName" type="text" size="45" placeholder="example@gmail.com" th:field="${user.login}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input name="password" type="password" size="45" placeholder="Password" th:field="${user.password}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    <input name="description" type="text" size="45" th:field="${user.description}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Address</label>
+                <div class="col-sm-10">
+                    <input name="address" type="text" size="45" th:field="${user.address}" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary action-button" name="btnSaveUser">Create</button>
+        </FORM>
+    </div>
+    <div class="user-edit-form" th:if="${editId != null}">
+        <FORM method="POST" th:action="@{/user/edit/{id}(id = ${editId})}" th:object="${user}">
+            <h4 class="user-edit-title">Update User:</h4>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">First name</label>
+                <div class="col-sm-10">
+                    <input name="firstName" type="text" size="45" th:field="*{firstName}" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Last Name</label>
+                <div class="col-sm-10">
+                    <input name="lastName" type="text" size="45" th:field="*{lastName}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Birthday</label>
+                <div class="col-sm-10">
+                    <input name="birthDay" type="text" size="45" placeholder="yy.mm.dd" th:field="*{birthDay}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Login</label>
+                <div class="col-sm-10">
+                    <input name="firstName" type="text" size="45" placeholder="example@gmail.com" th:field="*{login}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input name="password" type="password" placeholder="Password" size="45" th:field="*{password}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-10">
+                    <input name="description" type="text" size="45"
+                           th:field="*{description}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Address</label>
+                <div class="col-sm-10">
+                    <input name="address" type="text" size="45" th:field="*{address}"
+                           required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary action-button" name="btnChangeUser">Edit</button>
+        </FORM>
+    </div>
+
+    <table class="user-list-table table table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <!--<th>Id</th>-->
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Birthday</th>
+            <th>Login</th>
+            <th>Password</th>
+            <th>Description</th>
+            <th>Address</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tr th:each="user : ${users}">
+            <!--<td th:text="${user.id}"></td>-->
+            <td th:text="${user.firstName}"></td>
+            <td th:text="${user.lastName}"></td>
+            <td th:text="${user.birthDay}"></td>
+            <td th:text="${user.login}"></td>
+            <td th:text="${user.password}"></td>
+            <td th:text="${user.description}"></td>
+            <td th:text="${user.address}"></td>
+            <td style="text-align: center"><a th:href="@{'/user/edit/{id}'(id=${user.id})}">edit</a></td>
+            <td style="text-align: center"><a th:href="@{'/user/delete/{id}'(id=${user.id})}">delete</a></td>
+
+        </tr>
+    </table>
+    <div class="pagination pagination-container">
+        <div th:if="${currentPage != 1}">
+            <a class="page-link" th:href="@{/user(size=${users.getSize()}, page=${currentPage - 1})}">«</a>
+        </div>
+
+        <ul class="pagination justify-content-center" th:if="${users.getTotalPages() > 0}"
+            th:each="pageNumber : ${pageNumbers}">
+            <li class="page-item" th:classappend="${pageNumber==users.getNumber() + 1} ? 'active'">
+                <a class="page-link" th:href="@{/user(size=${users.getSize()}, page=${pageNumber})}"
+                   th:text=${pageNumber}
+                ></a>
+            </li>
+        </ul>
+        <div th:if="${currentPage < users.getTotalPages()}">
+            <a class="page-link" th:href="@{/user(size=${users.getSize()}, page=${currentPage + 1})}">»</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,34 +1,38 @@
 package com.myn.usercontrol.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User {
+    @Min(1)
+    @Max(10000000)
     private Long id;
 
+    @NotEmpty(message = "Please enter name")
     private String firstName;
 
+    @NotEmpty
     private String lastName;
 
     private LocalDate birthDay;
 
+    @Email
     private String login;
 
     private String password;
 
+    @NotEmpty
     private String description;
 
+    @NotEmpty
     private String address;
 }

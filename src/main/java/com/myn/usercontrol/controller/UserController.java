@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 public interface UserController {
-    @GetMapping("/user")
+    @GetMapping("/")
     List<User> showUsers();
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     User showUser(@PathVariable("id") Long id);
 
-    @PostMapping("/user")
+    @PostMapping("/")
     User createUser(@RequestBody User user);
 
-    @PostMapping("/user/edit/{id}")
+    @PostMapping("/edit/{id}")
     User editUser(@PathVariable("id") Long id, @RequestBody User user);
 
-    @PostMapping("/user/delete/{id}")
+    @PostMapping("/delete/{id}")
     void delete(@PathVariable("id") Long id);
 }
